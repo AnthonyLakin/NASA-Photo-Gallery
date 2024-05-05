@@ -8,7 +8,7 @@ private const val TAG = "NasaApi"
 
 interface NasaApi {
     @GET(
-        "mars-photos/api/v1/rovers/curiosity/photos?sol=1000&api_key=$API_KEY"
+        "mars-photos/api/v1/rovers/curiosity/photos?sol=50&api_key=$API_KEY"
     )
     suspend fun fetchPhotos(): GalleryItem
 }
