@@ -25,7 +25,6 @@ class PhotoDetailFragment : Fragment() {
         val imageView = view.findViewById<ImageView>(R.id.imageView)
         val textView = view.findViewById<TextView>(R.id.textView)
 
-        // Observe LiveData from ViewModel
         viewModel.src.observe(viewLifecycleOwner) { src ->
             imageView.load(src) {
                 placeholder(R.drawable.loading)

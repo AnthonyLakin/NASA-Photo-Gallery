@@ -1,14 +1,13 @@
 package com.lakin.msu.nasaphotogallery.api
 
 import retrofit2.http.GET
-
-private const val API_KEY = "DEMO_KEY"
-private const val TAG = "NasaApi"
-
+import retrofit2.http.Query
 
 interface NasaApi {
-    @GET(
-        "mars-photos/api/v1/rovers/curiosity/photos?sol=50&api_key=$API_KEY"
-    )
-    suspend fun fetchPhotos(): GalleryItem
+    @GET("mars-photos/api/v1/rovers/curiosity/photos")
+    suspend fun fetchPhotos(
+        @Query("sol") sol: Int = 50,
+        @Query("camera") camera: String,
+        @Query("api_key") apiKey: String = "DEMO_KEY"
+    ): GalleryItem
 }
