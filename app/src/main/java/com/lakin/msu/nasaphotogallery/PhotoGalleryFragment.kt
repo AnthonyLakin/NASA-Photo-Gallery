@@ -1,5 +1,6 @@
 package com.lakin.msu.nasaphotogallery
 
+import PhotoListAdapter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,13 +11,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
-import com.lakin.msu.nasaphotogallery.api.Photo
 import com.lakin.msu.nasaphotogallery.databinding.FragmentPhotoGalleryBinding
 import kotlinx.coroutines.launch
 
 private const val TAG = "PhotoGalleryFragment"
 
-class PhotoGalleryFragment: Fragment() {
+class PhotoGalleryFragment : Fragment() {
     private var _binding: FragmentPhotoGalleryBinding? = null
     private val binding
         get() = checkNotNull(_binding) {
@@ -24,14 +24,14 @@ class PhotoGalleryFragment: Fragment() {
         }
 
     private val photoGalleryViewModel: PhotoGalleryViewModel by viewModels()
+    private val photoDetailViewModel: PhotoDetailViewModel by viewModels()  // Added for handling photo details
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding =
-            FragmentPhotoGalleryBinding.inflate(inflater, container, false)
+        _binding = FragmentPhotoGalleryBinding.inflate(inflater, container, false)
         binding.photoGrid.layoutManager = GridLayoutManager(context, 3)
         return binding.root
     }
@@ -42,7 +42,12 @@ class PhotoGalleryFragment: Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 photoGalleryViewModel.photos.collect { items ->
-                    binding.photoGrid.adapter = PhotoListAdapter(items)
+                    // Ensure adapter is set once and not reset every time data updates
+                    if (binding.photoGrid.adapter == null) {
+                        binding.photoGrid.adapter = PhotoListAdapter(items, photoDetailViewModel)
+                    } else {
+                        (binding.photoGrid.adapter as PhotoListAdapter).updateItems(items)
+                    }
                 }
             }
         }
@@ -53,4 +58,3 @@ class PhotoGalleryFragment: Fragment() {
         _binding = null
     }
 }
-
