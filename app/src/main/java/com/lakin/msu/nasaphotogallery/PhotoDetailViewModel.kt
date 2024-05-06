@@ -1,39 +1,33 @@
 package com.lakin.msu.nasaphotogallery
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-
 private const val TAG = "PhotoDetailViewModel"
 
 class PhotoDetailViewModel : ViewModel() {
-    private var photoTitle: String = ""
-    private var photoId: String = ""
-    private var src: String = ""
+    private val _photoTitle = MutableLiveData<String>()
+    val photoTitle: LiveData<String> get() = _photoTitle
 
-    fun getPhotoTitle(): String {
-        return photoTitle
-    }
+    private val _photoId = MutableLiveData<String>()
+    val photoId: LiveData<String> get() = _photoId
+
+    private val _src = MutableLiveData<String>()
+    val src: LiveData<String> get() = _src
 
     fun setPhotoTitle(title: String) {
-        Log.d(TAG, "Setting photoTitle: $title")
-        photoTitle = title
-    }
-
-    fun getPhotoId(): String {
-        return photoId
+        _photoTitle.value = title
+        Log.d(TAG, "Photo title set to: $title")
     }
 
     fun setPhotoId(id: String) {
-        Log.d(TAG, "Setting photoId: $id")
-        photoId = id
-    }
-
-    fun getSrc(): String {
-        return src
+        _photoId.value = id
+        Log.d(TAG, "Photo ID set to: $id")
     }
 
     fun setSrc(src: String) {
-        Log.d(TAG, "Setting src: $src")
-        this.src = src
+        _src.value = src
+        Log.d(TAG, "Image source set to: $src")
     }
 }
