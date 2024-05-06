@@ -9,7 +9,8 @@ import com.lakin.msu.nasaphotogallery.databinding.ListItemGalleryBinding
 
 class PhotoViewHolder(
     private val binding: ListItemGalleryBinding,
-    private val viewModel: PhotoDetailViewModel
+    private val viewModel: PhotoDetailViewModel,
+    private val navigateToDetail: () -> Unit  // Passing the navigation callback
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(photo: Photo) {
@@ -22,13 +23,15 @@ class PhotoViewHolder(
             viewModel.setPhotoTitle(photo.camera.title)
             viewModel.setPhotoId(photo.id)
             viewModel.setSrc(photo.src)
+            navigateToDetail()  // Call the navigation function when the item is clicked
         }
     }
 }
 
 class PhotoListAdapter(
     private var photos: List<Photo>,
-    private val viewModel: PhotoDetailViewModel
+    private val viewModel: PhotoDetailViewModel,
+    private val navigateToDetail: () -> Unit  // Include a navigation callback
 ) : RecyclerView.Adapter<PhotoViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -36,7 +39,7 @@ class PhotoListAdapter(
     ): PhotoViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ListItemGalleryBinding.inflate(inflater, parent, false)
-        return PhotoViewHolder(binding, viewModel)
+        return PhotoViewHolder(binding, viewModel, navigateToDetail)  // Pass the navigation callback to the ViewHolder
     }
 
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {

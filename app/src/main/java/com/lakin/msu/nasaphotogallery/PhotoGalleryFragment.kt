@@ -6,10 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.lakin.msu.nasaphotogallery.databinding.FragmentPhotoGalleryBinding
 import kotlinx.coroutines.launch
@@ -24,13 +26,12 @@ class PhotoGalleryFragment : Fragment() {
         }
 
     private val photoGalleryViewModel: PhotoGalleryViewModel by viewModels()
-    private val photoDetailViewModel: PhotoDetailViewModel by viewModels()  // Added for handling photo details
+    private val photoDetailViewModel: PhotoDetailViewModel by activityViewModels()  // Added for handling photo details
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         _binding = FragmentPhotoGalleryBinding.inflate(inflater, container, false)
         binding.photoGrid.layoutManager = GridLayoutManager(context, 3)
         return binding.root
@@ -39,15 +40,16 @@ class PhotoGalleryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Set up the adapter with a navigation callback
+        val adapter = PhotoListAdapter(photoGalleryViewModel.photos.value ?: listOf(), photoDetailViewModel) {
+            findNavController().navigate(R.id.action_photoGalleryFragment_to_photoDetailFragment)
+        }
+        binding.photoGrid.adapter = adapter
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 photoGalleryViewModel.photos.collect { items ->
-                    // Ensure adapter is set once and not reset every time data updates
-                    if (binding.photoGrid.adapter == null) {
-                        binding.photoGrid.adapter = PhotoListAdapter(items, photoDetailViewModel)
-                    } else {
-                        (binding.photoGrid.adapter as PhotoListAdapter).updateItems(items)
-                    }
+                    adapter.updateItems(items)
                 }
             }
         }

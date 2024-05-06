@@ -18,16 +18,16 @@ class PhotoDetailViewModel : ViewModel() {
 
     fun setPhotoTitle(title: String) {
         _photoTitle.value = title
-        Log.d(TAG, "Photo title set to: $title")
+        //Log.d(TAG, "Photo title set to: $title")
     }
 
     fun setPhotoId(id: String) {
         _photoId.value = id
-        Log.d(TAG, "Photo ID set to: $id")
+        //Log.d(TAG, "Photo ID set to: $id")
     }
 
     fun setSrc(src: String) {
         _src.value = src
-        Log.d(TAG, "Image source set to: $src")
+        //Log.d(TAG, "Image source set to: $src")
     }
 }
